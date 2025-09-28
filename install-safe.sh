@@ -66,7 +66,7 @@ elif [[ "$PKG_MANAGER" == "yum" || "$PKG_MANAGER" == "dnf" ]]; then
     $INSTALL_CMD curl wget git gcc gcc-c++ make python3 python3-pip
 elif [[ "$PKG_MANAGER" == "pacman" ]]; then
     $INSTALL_CMD curl wget git base-devel python python-pip
-fi
+
 
 # Install Node.js using Node Version Manager (no external repos needed)
 print_status "Installing Node.js via NVM..."
