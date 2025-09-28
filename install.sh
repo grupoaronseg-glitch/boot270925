@@ -75,7 +75,7 @@ install_nodejs() {
         # Install yarn if not present
         if ! command_exists yarn; then
             print_status "Installing Yarn..."
-            npm install -g yarn
+            install_yarn
         fi
         return
     fi
@@ -86,17 +86,23 @@ install_nodejs() {
         "debian"|"kali")
             curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
             sudo apt-get install -y nodejs
+            # Install yarn via apt for better permissions
+            curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | sudo tee /usr/share/keyrings/yarnkey.gpg >/dev/null
+            echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+            sudo apt-get update && sudo apt-get install -y yarn
             ;;
         "redhat")
             curl -fsSL https://rpm.nodesource.com/setup_18.x | sudo bash -
             sudo yum install -y nodejs npm
+            # Install yarn via npm with sudo
+            sudo npm install -g yarn
             ;;
         "arch")
-            sudo pacman -S --noconfirm nodejs npm
+            sudo pacman -S --noconfirm nodejs npm yarn
             ;;
         "macos")
             if command_exists brew; then
-                brew install node
+                brew install node yarn
             else
                 print_error "Please install Node.js manually from https://nodejs.org/"
                 exit 1
@@ -108,11 +114,44 @@ install_nodejs() {
             ;;
     esac
     
-    # Install yarn
-    print_status "Installing Yarn..."
-    npm install -g yarn
-    
     print_success "Node.js and Yarn installed successfully"
+}
+
+# Function to install Yarn safely
+install_yarn() {
+    case $OS in
+        "debian"|"kali")
+            # Try package manager first
+            if ! sudo apt-get install -y yarn 2>/dev/null; then
+                # Fallback to official yarn installation
+                curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | sudo tee /usr/share/keyrings/yarnkey.gpg >/dev/null
+                echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+                sudo apt-get update && sudo apt-get install -y yarn
+            fi
+            ;;
+        "redhat")
+            sudo npm install -g yarn
+            ;;
+        "arch")
+            sudo pacman -S --noconfirm yarn
+            ;;
+        "macos")
+            if command_exists brew; then
+                brew install yarn
+            else
+                sudo npm install -g yarn
+            fi
+            ;;
+        *)
+            # Last resort - try with sudo
+            if command_exists npm; then
+                sudo npm install -g yarn
+            else
+                print_error "Cannot install Yarn. Please install manually."
+                exit 1
+            fi
+            ;;
+    esac
 }
 
 # Function to install Python
