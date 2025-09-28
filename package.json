@@ -1,0 +1,42 @@
+{
+  "name": "autoclick-dashboard",
+  "version": "1.0.0",
+  "description": "Sistema automatizado para abertura e fechamento de sites com dashboard web",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "cd frontend && yarn install && cd ../backend && pip install -r requirements.txt",
+    "start": "./start.sh",
+    "stop": "./stop.sh",
+    "build": "cd frontend && yarn build",
+    "dev:frontend": "cd frontend && yarn start",
+    "dev:backend": "cd backend && source venv/bin/activate && uvicorn server:app --host 0.0.0.0 --port 8001 --reload",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:build": "docker-compose build",
+    "logs:frontend": "tail -f frontend/logs/app.log",
+    "logs:backend": "tail -f backend/logs/app.log"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seu-usuario/autoclick-dashboard.git"
+  },
+  "keywords": [
+    "autoclick",
+    "dashboard",
+    "automation",
+    "web-scraping",
+    "react",
+    "fastapi",
+    "mongodb"
+  ],
+  "author": "Seu Nome",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/seu-usuario/autoclick-dashboard/issues"
+  },
+  "homepage": "https://github.com/seu-usuario/autoclick-dashboard#readme",
+  "engines": {
+    "node": ">=16.0.0",
+    "python": ">=3.8.0"
+  }
+}
