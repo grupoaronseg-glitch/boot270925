@@ -116,4 +116,7 @@ chrome_user_data/
 # Backups
 *.backup
 *.bak
-*.old
+*.old-e 
+# Environment files
+*.env
+*.env.*
